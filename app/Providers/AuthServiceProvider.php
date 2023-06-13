@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Providers;
+
+// use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        //
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     */
+    public function boot(): void
+    {
+        $this->registerPolicies();
+        Gate::define('comment-delete', function($user, $comment){
+            return $user->id == $comment->user->id or $user->id === $comment->content->user_id;;
+        });
+        Gate::define('content-delete', function($user, $content){
+            return $user->id == $content->user->id;
+        });
+        Gate::define('content-edit', function($user, $content){
+            return $user->id == $content->user->id;
+        });
+    }
+}
